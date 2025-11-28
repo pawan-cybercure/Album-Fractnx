@@ -1,0 +1,47 @@
+{
+  "name": "album_proj",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.574.0",
+    "@aws-sdk/lib-storage": "^3.574.0",
+    "@react-native-async-storage/async-storage": "^1.21.0",
+    "@react-native-camera-roll/camera-roll": "^7.5.0",
+    "@react-native-community/datetimepicker": "^7.6.2",
+    "@react-native-ml-kit/face-detection": "^2.0.1",
+    "@react-navigation/native": "^6.1.10",
+    "@react-navigation/native-stack": "^6.9.17",
+    "react-native-image-picker": "^7.1.2",
+    "react": "18.2.0",
+    "react-native": "0.73.6",
+    "react-native-calendars": "^1.1313.0",
+    "react-native-exif": "^0.5.0",
+    "react-native-fs": "^2.20.0",
+    "react-native-gesture-handler": "^2.12.1",
+    "react-native-get-random-values": "^1.11.0",
+    "react-native-mmkv": "^2.12.2",
+    "react-native-permissions": "^3.10.0",
+    "react-native-reanimated": "3.6.3",
+    "react-native-safe-area-context": "^4.8.2",
+    "react-native-screens": "^3.29.0",
+    "react-native-url-polyfill": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/runtime": "^7.24.7",
+    "@react-native/eslint-config": "^0.73.1",
+    "@react-native/metro-config": "^0.73.5",
+    "@types/react": "^18.2.20",
+    "@types/react-native": "^0.73.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "eslint": "^8.57.0",
+    "metro-react-native-babel-preset": "^0.77.0",
+    "typescript": "^5.4.5"
+  }
+}
