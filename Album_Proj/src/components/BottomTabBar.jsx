@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useTheme} from '../context/ThemeContext';
+import {useTheme} from '../context/ThemeContext'; //
 
 const PLUS_SIZE = 64;
 const BASE_BAR_HEIGHT = 88;
