@@ -108,7 +108,8 @@ export async function fetchPhotosFromDevice(date) {
         id: node.id || image.uri || image.filename,
         url: image.uri,
         fileName: image.filename || (image.uri ? image.uri.split('/').pop() : undefined),
-        timestamp: node.timestamp || node.creationTime || undefined,
+        // normalize timestamp to milliseconds to match storage/filter expectations
+        timestamp: toMillis(node.timestamp) ?? toMillis(node.creationTime) ?? undefined,
         width: image.width,
         height: image.height,
       };
