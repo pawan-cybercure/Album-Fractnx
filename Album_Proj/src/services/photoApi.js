@@ -1,4 +1,5 @@
 import {API_BASE_URL} from '../config/api';
+import {fetchPhotosFromDevice} from './mediaService';
 
 const formatDateParam = (date) => {
   if (!date) return undefined;
@@ -22,7 +23,7 @@ const handleResponse = async (response) => {
 export const fetchPhotos = async (date) => {
   try {
     const dateParam = formatDateParam(date);
-    const url = new URL(`${API_BASE_URL}/photos`);
+    const url = new URL(`${API_BASE_URL}/s3/photos`);
     if (dateParam) {
       url.searchParams.set('date', dateParam);
     }
@@ -30,8 +31,15 @@ export const fetchPhotos = async (date) => {
     const data = await handleResponse(response);
     return data.photos || [];
   } catch (err) {
-    console.warn('Failed to fetch photos', err);
-    return [];
+    console.warn('Failed to fetch photos from backend, falling back to device CameraRoll', err);
+    // Fallback to reading device gallery directly using CameraRoll
+    try {
+      const local = await fetchPhotosFromDevice(date);
+      return local || [];
+    } catch (err2) {
+      console.warn('Failed to fetch photos from device', err2);
+      return [];
+    }
   }
 };
 
@@ -45,7 +53,7 @@ export const uploadPhotoToApi = async ({uri, fileName, mimeType, selectedDate}) 
   if (selectedDate) {
     formData.append('selectedDate', selectedDate);
   }
-  const response = await fetch(`${API_BASE_URL}/photos/upload`, {
+  const response = await fetch(`${API_BASE_URL}/s3/photos/upload`, {
     method: 'POST',
     body: formData,
   });

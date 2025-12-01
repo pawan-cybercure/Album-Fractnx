@@ -72,9 +72,11 @@ export const MediaProvider = ({children}) => {
     loadForDate(selectedDate);
   }, [selectedDate, loadForDate]);
 
+  // Initial load only once on mount to avoid refetch loops when callbacks re-create.
   useEffect(() => {
     refresh();
-  }, [refresh]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const value = useMemo(() => (
     {media, allMedia, faces, selectedDate, loading, progress, refresh, setSelectedDate, filterByFace}

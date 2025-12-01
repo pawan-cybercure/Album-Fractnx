@@ -81,3 +81,44 @@ export async function ingestAllMedia(onProgress) {
 
   return collected;
 }
+
+export async function fetchPhotosFromDevice(date) {
+  try {
+    const params = {
+      first: 200,
+      assetType: 'Photos',
+      include: ['filename', 'fileSize', 'imageSize', 'location', 'creationDate']
+    };
+
+    if (date) {
+      const d = new Date(date);
+      const start = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      const end = start + 24 * 60 * 60 * 1000 - 1;
+      params.fromTime = start;
+      params.toTime = end;
+    }
+
+    const result = await CameraRoll.getPhotos(params);
+    const edges = result.edges || [];
+    console.debug('[mediaService] fetched from device', edges.length, 'items');
+    const photos = edges.map((e) => {
+      const node = e.node;
+      const image = node.image || {};
+      return {
+        id: node.id || image.uri || image.filename,
+        url: image.uri,
+        fileName: image.filename || (image.uri ? image.uri.split('/').pop() : undefined),
+        timestamp: node.timestamp || node.creationTime || undefined,
+        width: image.width,
+        height: image.height,
+      };
+    });
+    if (photos.length > 0) {
+      console.debug('[mediaService] sample uri', photos[0].url);
+    }
+    return photos;
+  } catch (err) {
+    console.warn('[mediaService] fetchPhotosFromDevice failed', err);
+    return [];
+  }
+}

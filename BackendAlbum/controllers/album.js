@@ -88,3 +88,57 @@ export const getPhotos = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch photos", error: err.message });
   }
 };
+
+// -------- Fresh APIs (v2) --------
+
+export const uploadPhotoV2 = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "File is required under `photo` field." });
+  }
+
+  const { selectedDate, title } = req.body;
+
+  try {
+    const uploadResult = await s3Services.upload(req.file, "uploads");
+    const record = buildRecord({
+      uploadResult,
+      file: req.file,
+      selectedDate,
+    });
+
+    const enhanced = {
+      ...record,
+      title: title || record.fileName,
+    };
+
+    await addPhotoRecord(enhanced);
+    return res.status(201).json({ photo: enhanced });
+  } catch (err) {
+    console.error("Upload failed (v2)", err);
+    return res.status(500).json({ message: "Failed to upload photo", error: err.message });
+  }
+};
+
+export const getPhotosV2 = async (req, res) => {
+  try {
+    const { date } = req.query;
+    const records = await getPhotoRecords();
+
+    const range = normalizeDateRange(date);
+    const filtered = range
+      ? records.filter((item) => {
+          const time =
+            (item.selectedDate && new Date(item.selectedDate).getTime()) ||
+            Number(item.timestamp) ||
+            (item.createdAt ? new Date(item.createdAt).getTime() : null);
+          if (!time) return false;
+          return time >= range.start.getTime() && time <= range.end.getTime();
+        })
+      : records;
+
+    return res.json({ photos: filtered });
+  } catch (err) {
+    console.error("Fetch failed (v2)", err);
+    return res.status(500).json({ message: "Failed to fetch photos", error: err.message });
+  }
+};
